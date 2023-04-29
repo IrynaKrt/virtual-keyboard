@@ -483,6 +483,7 @@ class Keyboard {
 
         this.textArea = document.createElement('input');
         this.textArea.setAttribute('type', 'text');
+        this.textArea.setAttribute('readonly', 'readonly');
         this.textArea.className = 'text';
         this.main.appendChild(this.textArea);
 
@@ -612,6 +613,7 @@ class Keyboard {
                     capsLock.classList.toggle('active');
                 }
             }
+
         });
 
         window.addEventListener('keyup', (e) => {
@@ -647,6 +649,14 @@ class Keyboard {
                 },200)
             }
         });
+
+        window.addEventListener('keypress', (e) => {
+            for(let i = 0; i < keys.length; i++) {
+                if(e.code === keys[i].getAttribute('data')) {
+                    textInput.value += keys[i].innerText;
+                }
+            }
+        })
 
         changeLanguage.addEventListener('click', () => {
 

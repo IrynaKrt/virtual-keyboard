@@ -455,6 +455,7 @@ class Keyboard {
 
         this.language = document.createElement('div');
         this.language.className = 'language';
+        this.language.innerText = 'english';
         this.changeLanguage.appendChild(this.language);
 
         this.keyboard = document.createElement('div');
@@ -604,7 +605,7 @@ class Keyboard {
         let textInput = document.querySelector('.text');
         let changeLanguage = document.querySelector('.change-language');
         let value = '';
-        let oldValue = textInput.innerHTML;
+        let upper = 0;
         let pressed = 0;
 
         for(let i = 0; i < keys.length; i++) {
@@ -628,10 +629,20 @@ class Keyboard {
                     ctrlKey.classList.add('active')
                 }
                 if(e.code == 'ShiftLeft') {
-                    shiftRight.classList.remove('active')
+                    shiftRight.classList.remove('active');
+                    upper = 1;
                 }
                 if(e.code == 'ShiftRight') {
-                    shiftLeft.classList.remove('active')
+                    shiftLeft.classList.remove('active');
+                    upper = 1;
+                }
+                if(e.code == 'ShiftLeft' || e.code == 'ShiftRight' && upper === 1) {
+                    for(let j = 0; j < keys.length; j++) {
+                        keys[j].classList.toggle('shift-active');
+                        if(keys[j].classList.contains('shift-active')) {
+                            keys[j].innerText = this.keysObjects[j].enUpt ? this.keysObjects[j].enUpt : this.keysObjects[j].enKey;
+                        }
+                    }
                 }
                 if(e.code == 'CapsLock') {
                     capsLock.classList.toggle('active');
@@ -661,6 +672,7 @@ class Keyboard {
                     shiftRight.classList.remove('active');
                     shiftRight.classList.remove('remove');
                     pressed = 1;
+                    upper = 0;
                 }
                 if(e.code === 'AltLeft' && pressed === 1) {
                     for(let j = 0; j < keys.length; j++) {
@@ -676,8 +688,17 @@ class Keyboard {
                     }
                 }
                 if(e.code == 'ShiftRight') {
-                    shiftLeft.classList.remove('active')
-                    shiftLeft.classList.remove('remove')
+                    shiftLeft.classList.remove('active');
+                    shiftLeft.classList.remove('remove');
+                    upper = 0;
+                }
+                if(upper === 0) {
+                    for(let j = 0; j < keys.length; j++) {
+                        keys[j].classList.toggle('shift-active');
+                        if(keys[j].classList.contains('shift-active')) {
+                            keys[j].innerText = this.keysObjects[j].enKey;
+                        }
+                    }
                 }
                 if(e.code == 'CapsLock') {
                     capsLock.classList.toggle('active');
@@ -715,7 +736,7 @@ class Keyboard {
                     key.classList.toggle('caps');
                 }
                 value += key.innerText;
-                textInput.value = oldValue + value;
+                textInput.value = textInput.innerHTML + value;
 
                 if(key.getAttribute('data') === 'ShiftLeft') {
                     shiftRight.classList.remove('active');

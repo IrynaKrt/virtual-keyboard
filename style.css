@@ -211,7 +211,7 @@ body {
     animation: keys-animation 0.5s forwards ;
 }
 
-.keys.caps {
+.caps {
     background-color: #000000;
     color: #fff;
 }

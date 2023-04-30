@@ -483,7 +483,7 @@ class Keyboard {
 
         this.textArea = document.createElement('input');
         this.textArea.setAttribute('type', 'text');
-        this.textArea.setAttribute('readonly', 'readonly');
+        // this.textArea.setAttribute('readonly', 'readonly');
         this.textArea.className = 'text';
         this.main.appendChild(this.textArea);
 
@@ -497,12 +497,26 @@ class Keyboard {
         let arrThree = allKeys.slice(42, 55);
         let arrFour = allKeys.slice(55, allKeys.length);
 
+        function addKey(arrElem, elem) {
+            if(elem.classList.contains('shift-active') || elem.classList.contains('caps-active')) {
+                elem.innerText = arrElem.enUpt;
+            } else if(elem.classList.contains('ru-active')) {
+                elem.innerText = arrElem.ruKey;
+            } else if(elem.classList.contains('ru-active') && (elem.classList.contains('shift-active') || elem.classList.contains('caps-active'))) {
+                elem.innerText = arrElem.ruUp;
+            } else {
+                elem.innerText = arrElem.enKey;
+            }
+        }
+
         arr.forEach(key => {
             const keyElement = document.createElement('button');
             keyElement.setAttribute("type", "button");
             keyElement.setAttribute("data", key.code);
             keyElement.className = 'keys';
+
             keyElement.innerText = key.enKey;
+
             if(key.code === "Backspace") {
                 keyElement.className = "keys backspace-key";
             }
@@ -514,7 +528,9 @@ class Keyboard {
             keyElement.setAttribute("type", "button");
             keyElement.setAttribute("data", key.code);
             keyElement.className = 'keys';
+
             keyElement.innerText = key.enKey;
+
             if(key.code === "Tab") {
                 keyElement.className = "keys tab-key";
             }
@@ -526,7 +542,9 @@ class Keyboard {
             keyElement.setAttribute("type", "button");
             keyElement.setAttribute("data", key.code);
             keyElement.className = 'keys';
+
             keyElement.innerText = key.enKey;
+
             if(key.code === "CapsLock") {
                 keyElement.className = "keys caps-lock-key";
             } else if(key.code === "Enter") {
@@ -540,7 +558,9 @@ class Keyboard {
             keyElement.setAttribute("type", "button");
             keyElement.setAttribute("data", key.code);
             keyElement.className = 'keys';
+
             keyElement.innerText = key.enKey;
+
             if(key.code === "ShiftRight") {
                 keyElement.className = "keys shift-key shift-right";
             }
@@ -555,7 +575,9 @@ class Keyboard {
             keyElement.setAttribute("type", "button");
             keyElement.setAttribute("data", key.code);
             keyElement.className = 'keys';
+
             keyElement.innerText = key.enKey;
+
             if(key.code === "ControlLeft" || key.code === "ControlRight") {
                 keyElement.className = "keys ctrl-key";
             } else if(key.code === "MetaLeft") {
@@ -568,6 +590,7 @@ class Keyboard {
 
             this.keyRowsFour.appendChild(keyElement);
         });
+
         //EventListener
         let keys = document.querySelectorAll('.keys');
         let spaceKey = document.querySelector('.space-key');
@@ -581,12 +604,13 @@ class Keyboard {
         let textInput = document.querySelector('.text');
         let changeLanguage = document.querySelector('.change-language');
         let value = '';
+        let oldValue = textInput.innerHTML;
+        let pressed = 0;
 
         for(let i = 0; i < keys.length; i++) {
             keys[i].setAttribute('keyname', keys[i].innerText);
             keys[i].setAttribute('lowerCaseName', keys[i].innerText.toLowerCase());
         };
-
 
         window.addEventListener('keydown', (e) => {
             capsLock.classList.remove('caps');
@@ -612,8 +636,8 @@ class Keyboard {
                 if(e.code == 'CapsLock') {
                     capsLock.classList.toggle('active');
                 }
-            }
 
+            }
         });
 
         window.addEventListener('keyup', (e) => {
@@ -634,8 +658,22 @@ class Keyboard {
                     ctrlKey.classList.remove('active')
                 }
                 if(e.code == 'ShiftLeft') {
-                    shiftRight.classList.remove('active')
-                    shiftRight.classList.remove('remove')
+                    shiftRight.classList.remove('active');
+                    shiftRight.classList.remove('remove');
+                    pressed = 1;
+                }
+                if(e.code === 'AltLeft' && pressed === 1) {
+                    for(let j = 0; j < keys.length; j++) {
+                        keys[j].classList.toggle('ru-active');
+                        if(keys[j].classList.contains('ru-active')) {
+                            keys[j].innerText = this.keysObjects[j].ruKey;
+                            this.language.innerText = 'русский';
+                        } else {
+                            keys[j].innerText = this.keysObjects[j].enKey;
+                            this.language.innerText = 'english';
+                        }
+                        pressed = 0;
+                    }
                 }
                 if(e.code == 'ShiftRight') {
                     shiftLeft.classList.remove('active')
@@ -650,45 +688,81 @@ class Keyboard {
             }
         });
 
-        window.addEventListener('keypress', (e) => {
-            for(let i = 0; i < keys.length; i++) {
-                if(e.code === keys[i].getAttribute('data')) {
-                    textInput.value += keys[i].innerText;
-                }
-            }
-        })
-
         changeLanguage.addEventListener('click', () => {
-
             this.language.classList.toggle('active');
             toggleCircle.classList.toggle('active');
-            body.classList.toggle('active');
             changeLanguage.classList.toggle('active');
             textInput.classList.toggle('active');
+
             for(let i = 0; i < keys.length; i++) {
-                keys[i].classList.toggle('keys-night')
+                keys[i].classList.toggle('keys-night');
+                keys[i].classList.toggle('ru-active');
+                if(keys[i].classList.contains('ru-active')) {
+                    keys[i].innerText = this.keysObjects[i].ruKey;
+                    this.language.innerText = 'русский';
+                } else {
+                    keys[i].innerText = this.keysObjects[i].enKey;
+                    this.language.innerText = 'english';
+                }
             }
         })
 
         keys.forEach(key => {
             key.addEventListener('click', (e) => {
-                console.log(key.getAttribute('data'));
                 key.classList.remove('remove');
                 key.classList.add('active');
                 if(key.classList.contains('caps-lock-key')) {
                     key.classList.toggle('caps');
                 }
-                if(key.innerHTML !== 'Shift' || key.innerHTML !== 'Ctrl' || key.innerHTML !== 'Win' || key.innerHTML !== 'Alt' || key.innerHTML !== 'Bs' || key.innerHTML !== 'Enter' || key.innerHTML !== 'Tab' || key.innerHTML !== 'Del') {
-                    value += key.innerHTML;
-                } else if(key.innerHTML === 'Shift' || key.innerHTML === 'Ctrl' || key.innerHTML === 'Win' || key.innerHTML === 'Alt' || key.innerHTML === 'Bs' || key.innerHTML === 'Enter' || key.innerHTML === 'Tab' || key.innerHTML === 'Del') {
-                    return;
+                value += key.innerText;
+                textInput.value = oldValue + value;
+
+                if(key.getAttribute('data') === 'ShiftLeft') {
+                    shiftRight.classList.remove('active');
+                    shiftRight.classList.remove('remove');
+                    pressed = 1;
                 }
-                textInput.value = value + textInput.innerHTML;
+                if(key.getAttribute('data') === 'AltLeft' && pressed === 1) {
+                    for(let j = 0; j < keys.length; j++) {
+                        keys[j].classList.toggle('ru-active');
+                        if(keys[j].classList.contains('ru-active')) {
+                            keys[j].innerText = this.keysObjects[j].ruKey;
+                            this.language.innerText = 'русский';
+                        } else {
+                            keys[j].innerText = this.keysObjects[j].enKey;
+                            this.language.innerText = 'english';
+                        }
+                        pressed = 0;
+                    }
+                }
             });
             key.addEventListener('mouseleave', () => {
                 key.classList.remove('active');
                 key.classList.add('remove');
             });
         });
+
+    }
+
+    addKeys() {
+        this.keysWrap = document.createElement('div');
+        this.keysWrap.className = 'keyboard-keys';
+        this.keyboard.appendChild(this.keysWrap);
+
+        this.keyRows = document.createElement('div')
+        this.keyRows.className = 'row';
+        this.keysWrap.appendChild(this.keyRows);
+        this.keyRowsOne = document.createElement('div')
+        this.keyRowsOne.className = 'row-one';
+        this.keysWrap.appendChild(this.keyRowsOne);
+        this.keyRowsTwo = document.createElement('div')
+        this.keyRowsTwo.className = 'row-two';
+        this.keysWrap.appendChild(this.keyRowsTwo);
+        this.keyRowsThree = document.createElement('div')
+        this.keyRowsThree.className = 'row-three';
+        this.keysWrap.appendChild(this.keyRowsThree);
+        this.keyRowsFour = document.createElement('div')
+        this.keyRowsFour.className = 'row-four';
+        this.keysWrap.appendChild(this.keyRowsFour);
     }
 }

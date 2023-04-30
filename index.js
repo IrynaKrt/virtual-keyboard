@@ -13,6 +13,7 @@ class Keyboard {
         this.main = null,
         this.keyboard = null,
         this.keysWrap = null,
+        this.attention = null;
 
         this.keyRow = null,
         this.keyRowOne = null,
@@ -488,6 +489,11 @@ class Keyboard {
         this.textArea.className = 'text';
         this.main.appendChild(this.textArea);
 
+        this.attention = document.createElement('div');
+        this.attention.className = 'attention';
+        this.attention.innerText = 'Задание выполнено на базе Windows \n Для переключения между языками можно использовать меню или сочетание Shift + Alt';
+        this.main.appendChild(this.attention);
+
         //Keys
 
         const allKeys = this.keysObjects;
@@ -497,18 +503,6 @@ class Keyboard {
         let arrTwo = allKeys.slice(29, 42);
         let arrThree = allKeys.slice(42, 55);
         let arrFour = allKeys.slice(55, allKeys.length);
-
-        function addKey(arrElem, elem) {
-            if(elem.classList.contains('shift-active') || elem.classList.contains('caps-active')) {
-                elem.innerText = arrElem.enUpt;
-            } else if(elem.classList.contains('ru-active')) {
-                elem.innerText = arrElem.ruKey;
-            } else if(elem.classList.contains('ru-active') && (elem.classList.contains('shift-active') || elem.classList.contains('caps-active'))) {
-                elem.innerText = arrElem.ruUp;
-            } else {
-                elem.innerText = arrElem.enKey;
-            }
-        }
 
         arr.forEach(key => {
             const keyElement = document.createElement('button');
@@ -616,6 +610,10 @@ class Keyboard {
         window.addEventListener('keydown', (e) => {
             for(let i = 0; i < keys.length; i++) {
                 if(e.key == keys[i].getAttribute('keyname' ) || e.key == keys[i].getAttribute('lowerCaseName')) {
+                    if(e.code === keys[i].getAttribute('data')) {
+                        console.log(keys[i].innerText)
+                        this.textArea.innerHTML = keys[i].innerText;
+                    }
                     keys[i].classList.add('active')
                 }
                 if(e.code == 'MetaLeft') {
@@ -635,6 +633,16 @@ class Keyboard {
                     shiftLeft.classList.remove('active');
                     upper = 1;
                 }
+
+                // if(e.code == 'ShiftRight' || e.code == 'ShiftLeft' && capsLock.classList.contains('caps')) {
+                //     for(let j = 0; j < keys.length; j++) {
+                //         if(keys[j].classList.contains('ru-active')) {
+                //             keys[j].innerText = this.keysObjects[j].ruKey;
+                //         } else {
+                //             keys[j].innerText = this.keysObjects[j].enKey;
+                //         }
+                //     }
+                // }
 
                 if((e.code == 'ShiftLeft' || e.code == 'ShiftRight') && e.target.classList.contains('ru-active') && upper === 1) {
                     console.log('ru')
@@ -717,9 +725,21 @@ class Keyboard {
                     pressed = 1;
                     upper = 0;
                 }
+
+                // if(e.code == 'ShiftRight' || e.code == 'ShiftLeft' && capsLock.classList.contains('caps')) {
+                //     for(let j = 0; j < keys.length; j++) {
+                //         if(keys[j].classList.contains('ru-active')) {
+                //             keys[j].innerText = this.keysObjects[j].ruUp;
+                //         } else {
+                //             keys[j].innerText = this.keysObjects[j].enUpt;
+                //         }
+                //     }
+                // }
+
                 if(e.code === 'AltLeft' && pressed === 1) {
                     for(let j = 0; j < keys.length; j++) {
                         keys[j].classList.toggle('ru-active');
+                        keys[j].classList.toggle('keys-night');
                         if(keys[j].classList.contains('ru-active')) {
                             keys[j].innerText = this.keysObjects[j].ruKey;
                             this.language.innerText = 'русский';
@@ -730,6 +750,7 @@ class Keyboard {
                         pressed = 0;
                     }
                 }
+
                 if(e.code == 'ShiftRight' || e.code == 'ShiftLeft') {
                     shiftLeft.classList.remove('active');
                     shiftLeft.classList.remove('remove');
@@ -821,6 +842,10 @@ class Keyboard {
 
         keys.forEach(key => {
             key.addEventListener('click', (e) => {
+                if(key.getAttribute('data') === e.target.getAttribute('data')) {
+                    value += key.innerText;
+                    this.textArea.innerHTML = value;
+                }
                 key.classList.remove('remove');
                 key.classList.add('active');
                 if(key.classList.contains('caps-lock-key')) {
@@ -842,6 +867,7 @@ class Keyboard {
                 if(key.getAttribute('data') === 'AltLeft' && pressed === 1) {
                     for(let j = 0; j < keys.length; j++) {
                         keys[j].classList.toggle('ru-active');
+                        keys[j].classList.toggle('keys-night');
                         if(keys[j].classList.contains('ru-active')) {
                             keys[j].innerText = this.keysObjects[j].ruKey;
                             this.language.innerText = 'русский';
@@ -876,7 +902,12 @@ class Keyboard {
                         upper = 0;
                     }
                 }
+
+                // if(key.getAttribute('data') === 'Backspace' && upper === 1) {
+
+                // }
             });
+
             key.addEventListener('mouseleave', () => {
                 key.classList.remove('active');
                 key.classList.add('remove');
@@ -888,27 +919,5 @@ class Keyboard {
             capsLock.style.color = '#000000;';
         }
 
-    }
-
-    addKeys() {
-        this.keysWrap = document.createElement('div');
-        this.keysWrap.className = 'keyboard-keys';
-        this.keyboard.appendChild(this.keysWrap);
-
-        this.keyRows = document.createElement('div')
-        this.keyRows.className = 'row';
-        this.keysWrap.appendChild(this.keyRows);
-        this.keyRowsOne = document.createElement('div')
-        this.keyRowsOne.className = 'row-one';
-        this.keysWrap.appendChild(this.keyRowsOne);
-        this.keyRowsTwo = document.createElement('div')
-        this.keyRowsTwo.className = 'row-two';
-        this.keysWrap.appendChild(this.keyRowsTwo);
-        this.keyRowsThree = document.createElement('div')
-        this.keyRowsThree.className = 'row-three';
-        this.keysWrap.appendChild(this.keyRowsThree);
-        this.keyRowsFour = document.createElement('div')
-        this.keyRowsFour.className = 'row-four';
-        this.keysWrap.appendChild(this.keyRowsFour);
     }
 }

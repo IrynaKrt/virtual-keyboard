@@ -215,3 +215,17 @@ body {
     background-color: #000000;
     color: #fff;
 }
+
+.attention {
+    max-width: 1008px;
+    width: 100%;
+    background-color: #e7e7e7;
+    overflow: hidden;
+    position: relative;
+    overflow: hidden;
+    order: 3;
+    text-align: center;
+    margin: 50px 0;
+    padding: 20px;
+    line-height: 2.5;
+}

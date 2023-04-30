@@ -635,28 +635,61 @@ class Keyboard {
                     shiftLeft.classList.remove('active');
                     upper = 1;
                 }
-                if(e.code == 'ShiftLeft' || e.code == 'ShiftRight' && upper === 1) {
+
+                if((e.code == 'ShiftLeft' || e.code == 'ShiftRight') && e.target.classList.contains('ru-active') && upper === 1) {
+                    console.log('ru')
+                    for(let j = 0; j < keys.length; j++) {
+                        keys[j].classList.toggle('shift-active');
+                        if(keys[j].classList.contains('shift-active')) {
+                            keys[j].innerText = this.keysObjects[j].ruUp ? this.keysObjects[j].ruUp : this.keysObjects[j].ruKey;
+                        } else {
+                            keys[j].classList.remove('shift-active');
+                            keys[j].innerText = this.keysObjects[j].ruKey;
+                        }
+                    }
+                }
+                if((e.code == 'ShiftLeft' || e.code == 'ShiftRight') && !e.target.classList.contains('ru-active') && upper === 1) {
+                    console.log('en')
                     for(let j = 0; j < keys.length; j++) {
                         keys[j].classList.toggle('shift-active');
                         if(keys[j].classList.contains('shift-active')) {
                             keys[j].innerText = this.keysObjects[j].enUpt ? this.keysObjects[j].enUpt : this.keysObjects[j].enKey;
-                        }
-                    }
-                }
-                if(e.code == 'CapsLock') {
-                    capsLock.classList.toggle('active');
-                    upper = 1;
-                }
-                if(e.code == 'CapsLock' && upper === 1) {
-                    for(let j = 0; j < keys.length; j++) {
-                        keys[j].classList.toggle('caps-active');
-                        capsLock.classList.toggle('caps');
-                        if(keys[j].classList.contains('caps-active')) {
-                            keys[j].innerText = this.keysObjects[j].enUpt ? this.keysObjects[j].enUpt : this.keysObjects[j].enKey;
                         } else {
+                            keys[j].classList.remove('shift-active');
                             keys[j].innerText = this.keysObjects[j].enKey;
                         }
                     }
+                }
+
+                if(e.code == 'CapsLock') {
+                    capsLock.classList.toggle('active');
+                    capsLock.classList.toggle('caps');
+                    upper = 1;
+                }
+
+                if(e.code == 'CapsLock' && e.target.classList.contains('ru-active') && upper === 1) {
+                    for(let j = 0; j < keys.length; j++) {
+                        keys[j].classList.toggle('caps-active');
+                        if(keys[j].classList.contains('caps-active')) {
+                            keys[j].innerText = this.keysObjects[j].ruUp ? this.keysObjects[j].ruUp : this.keysObjects[j].ruKey;
+                        } else {
+                            keys[j].innerText = this.keysObjects[j].ruKey;
+                        }
+                    }
+                    upper = 0;
+                }
+
+                if(e.code == 'CapsLock' && !e.target.classList.contains('ru-active') && upper === 1) {
+                        for(let j = 0; j < keys.length; j++) {
+                            keys[j].classList.toggle('caps-active');
+                            if(keys[j].classList.contains('caps-active')) {
+                                keys[j].innerText = this.keysObjects[j].enUpt ? this.keysObjects[j].enUpt : this.keysObjects[j].enKey;
+                            } else {
+                                keys[j].innerText = this.keysObjects[j].enKey;
+                            }
+                        }
+                        upper = 0;
+
                 }
             }
         });
@@ -697,20 +730,25 @@ class Keyboard {
                         pressed = 0;
                     }
                 }
-                if(e.code == 'ShiftRight') {
+                if(e.code == 'ShiftRight' || e.code == 'ShiftLeft') {
                     shiftLeft.classList.remove('active');
                     shiftLeft.classList.remove('remove');
                     upper = 0;
                 }
-                if(upper === 0) {
+
+                if((e.code == 'ShiftLeft' || e.code == 'ShiftRight') && upper === 0) {
+                    console.log('ru')
                     for(let j = 0; j < keys.length; j++) {
-                        keys[j].classList.remove('shift-active');
-                        keys[j].innerText = this.keysObjects[j].enKey;
+                        if(keys[j].classList.contains('ru-active')) {
+                            keys[j].classList.remove('shift-active');
+                            keys[j].innerText = this.keysObjects[j].ruKey;
+                        } else {
+                            keys[j].classList.remove('shift-active');
+                            keys[j].innerText = this.keysObjects[j].enKey;
+                        }
                     }
                 }
-                if(e.code == 'CapsLock') {
-                    capsLock.classList.toggle('active');
-                }
+
                 setTimeout(()=> {
                     keys[i].classList.remove('remove')
                 },200)
@@ -721,7 +759,19 @@ class Keyboard {
             if(e.target.getAttribute('keyname') === 'Shift') {
                 upper = 1;
             }
-            if(e.target.getAttribute('keyname') === 'Shift' && upper === 1) {
+
+            if(e.target.getAttribute('keyname') === 'Shift' && e.target.classList.contains('ru-active') && upper === 1) {
+                for(let j = 0; j < keys.length; j++) {
+                    keys[j].classList.add('shift-active');
+                    if(keys[j].classList.contains('shift-active')) {
+                        keys[j].innerText = this.keysObjects[j].ruUp ? this.keysObjects[j].ruUp : this.keysObjects[j].ruKey;
+                    } else {
+                        keys[j].innerText = this.keysObjects[j].ruKey;
+                    }
+                }
+            }
+
+            if(e.target.getAttribute('keyname') === 'Shift' && !e.target.classList.contains('ru-active') && upper === 1) {
                 for(let j = 0; j < keys.length; j++) {
                     keys[j].classList.add('shift-active');
                     if(keys[j].classList.contains('shift-active')) {
@@ -734,7 +784,14 @@ class Keyboard {
         })
 
         window.addEventListener('mouseup', (e) => {
-            if(e.target.getAttribute('keyname') === 'Shift' && upper === 1) {
+            if(e.target.getAttribute('keyname') === 'Shift' && e.target.classList.contains('ru-active') && upper === 1) {
+                for(let j = 0; j < keys.length; j++) {
+                    keys[j].classList.remove('shift-active');
+                    keys[j].innerText = this.keysObjects[j].ruKey;
+                }
+            }
+
+            if(e.target.getAttribute('keyname') === 'Shift' && !e.target.classList.contains('ru-active') && upper === 1) {
                 for(let j = 0; j < keys.length; j++) {
                     keys[j].classList.remove('shift-active');
                     keys[j].innerText = this.keysObjects[j].enKey;
@@ -795,6 +852,19 @@ class Keyboard {
                         pressed = 0;
                     }
                 }
+
+                if(key.getAttribute('data') === 'CapsLock' && key.classList.contains('ru-active') && upper === 1) {
+                    for(let j = 0; j < keys.length; j++) {
+                        keys[j].classList.toggle('caps-active');
+                        if(keys[j].classList.contains('caps-active')) {
+                            keys[j].innerText = this.keysObjects[j].ruUp ? this.keysObjects[j].ruUp : this.keysObjects[j].ruKey;
+                        } else {
+                            keys[j].innerText = this.keysObjects[j].ruKey;
+                        }
+                        upper = 0;
+                    }
+                }
+
                 if(key.getAttribute('data') === 'CapsLock' && upper === 1) {
                     for(let j = 0; j < keys.length; j++) {
                         keys[j].classList.toggle('caps-active');
@@ -812,6 +882,11 @@ class Keyboard {
                 key.classList.add('remove');
             });
         });
+
+        if(capsLock.classList.contains('keys-night') && capsLock.classList.contains('caps')) {
+            capsLock.style.backgroundColor = '#adadad';
+            capsLock.style.color = '#000000;';
+        }
 
     }
 

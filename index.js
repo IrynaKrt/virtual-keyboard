@@ -483,7 +483,7 @@ class Keyboard {
         this.keyRowsFour.className = 'row-four';
         this.keysWrap.appendChild(this.keyRowsFour);
 
-        this.textArea = document.createElement('input');
+        this.textArea = document.createElement('textarea');
         this.textArea.setAttribute('type', 'text');
         // this.textArea.setAttribute('readonly', 'readonly');
         this.textArea.className = 'text';
@@ -607,14 +607,17 @@ class Keyboard {
             keys[i].setAttribute('lowerCaseName', keys[i].innerText.toLowerCase());
         };
 
+        //KeyDown
+
         window.addEventListener('keydown', (e) => {
             for(let i = 0; i < keys.length; i++) {
+                keys[i].classList.remove('remove');
                 if(e.key == keys[i].getAttribute('keyname' ) || e.key == keys[i].getAttribute('lowerCaseName')) {
                     if(e.code === keys[i].getAttribute('data')) {
                         console.log(keys[i].innerText)
-                        this.textArea.innerHTML = keys[i].innerText;
+                        value += keys[i].innerText;
+                        keys[i].classList.add('active');
                     }
-                    keys[i].classList.add('active')
                 }
                 if(e.code == 'MetaLeft') {
                     metaKey.classList.add('active')
@@ -634,15 +637,6 @@ class Keyboard {
                     upper = 1;
                 }
 
-                // if(e.code == 'ShiftRight' || e.code == 'ShiftLeft' && capsLock.classList.contains('caps')) {
-                //     for(let j = 0; j < keys.length; j++) {
-                //         if(keys[j].classList.contains('ru-active')) {
-                //             keys[j].innerText = this.keysObjects[j].ruKey;
-                //         } else {
-                //             keys[j].innerText = this.keysObjects[j].enKey;
-                //         }
-                //     }
-                // }
 
                 if((e.code == 'ShiftLeft' || e.code == 'ShiftRight') && e.target.classList.contains('ru-active') && upper === 1) {
                     console.log('ru')
@@ -651,7 +645,6 @@ class Keyboard {
                         if(keys[j].classList.contains('shift-active')) {
                             keys[j].innerText = this.keysObjects[j].ruUp ? this.keysObjects[j].ruUp : this.keysObjects[j].ruKey;
                         } else {
-                            keys[j].classList.remove('shift-active');
                             keys[j].innerText = this.keysObjects[j].ruKey;
                         }
                     }
@@ -660,7 +653,7 @@ class Keyboard {
                     console.log('en')
                     for(let j = 0; j < keys.length; j++) {
                         keys[j].classList.toggle('shift-active');
-                        if(keys[j].classList.contains('shift-active')) {
+                        if(keys[j].classList.contains('shift-active') && !keys[j].classList.contains('ru-active')) {
                             keys[j].innerText = this.keysObjects[j].enUpt ? this.keysObjects[j].enUpt : this.keysObjects[j].enKey;
                         } else {
                             keys[j].classList.remove('shift-active');
@@ -702,6 +695,8 @@ class Keyboard {
             }
         });
 
+        //KeyUp
+
         window.addEventListener('keyup', (e) => {
             for(let i = 0; i < keys.length; i++) {
                 if(e.key == keys[i].getAttribute('keyname' ) || e.key == keys[i].getAttribute('lowerCaseName')) {
@@ -726,16 +721,6 @@ class Keyboard {
                     upper = 0;
                 }
 
-                // if(e.code == 'ShiftRight' || e.code == 'ShiftLeft' && capsLock.classList.contains('caps')) {
-                //     for(let j = 0; j < keys.length; j++) {
-                //         if(keys[j].classList.contains('ru-active')) {
-                //             keys[j].innerText = this.keysObjects[j].ruUp;
-                //         } else {
-                //             keys[j].innerText = this.keysObjects[j].enUpt;
-                //         }
-                //     }
-                // }
-
                 if(e.code === 'AltLeft' && pressed === 1) {
                     for(let j = 0; j < keys.length; j++) {
                         keys[j].classList.toggle('ru-active');
@@ -751,14 +736,13 @@ class Keyboard {
                     }
                 }
 
-                if(e.code == 'ShiftRight' || e.code == 'ShiftLeft') {
+                if(e.code == 'ShiftRight') {
                     shiftLeft.classList.remove('active');
                     shiftLeft.classList.remove('remove');
                     upper = 0;
                 }
 
                 if((e.code == 'ShiftLeft' || e.code == 'ShiftRight') && upper === 0) {
-                    console.log('ru')
                     for(let j = 0; j < keys.length; j++) {
                         if(keys[j].classList.contains('ru-active')) {
                             keys[j].classList.remove('shift-active');
@@ -775,6 +759,8 @@ class Keyboard {
                 },200)
             }
         });
+
+        //MouseDown
 
         window.addEventListener('mousedown', (e) => {
             if(e.target.getAttribute('keyname') === 'Shift') {
@@ -804,6 +790,8 @@ class Keyboard {
             }
         })
 
+        //MouseUp
+
         window.addEventListener('mouseup', (e) => {
             if(e.target.getAttribute('keyname') === 'Shift' && e.target.classList.contains('ru-active') && upper === 1) {
                 for(let j = 0; j < keys.length; j++) {
@@ -820,6 +808,8 @@ class Keyboard {
             }
             upper = 0;
         });
+
+        //Language
 
         changeLanguage.addEventListener('click', () => {
             this.language.classList.toggle('active');
@@ -840,14 +830,35 @@ class Keyboard {
             }
         })
 
+        //KeysInput
+
         keys.forEach(key => {
             key.addEventListener('click', (e) => {
-                if(key.getAttribute('data') === e.target.getAttribute('data')) {
-                    value += key.innerText;
-                    this.textArea.innerHTML = value;
+                //Input
+                if(key.classList.contains('caps-lock-key')) {
+                    value += '';
+                } else if(key.getAttribute('keyname') === 'Shift') {
+                    value += '';
+                } else if(key.getAttribute('keyname') === 'Alt') {
+                    this.textArea.blur();
+                } else if(key.getAttribute('data') === 'Backspace') {
+                    this.select(key);
+                } else if(key.getAttribute('data') === 'Delete') {
+                    this.select(key);
+                } else if(key.getAttribute('data') === 'Enter') {
+                    value += '\n';
+                } else if(key.getAttribute('data') === 'MetaLeft') {
+                    value += '';
+                } else {
+                    value += key.innerHTML;
                 }
+                this.textArea.innerText = value;
+
+                //Classes
                 key.classList.remove('remove');
                 key.classList.add('active');
+
+
                 if(key.classList.contains('caps-lock-key')) {
                     key.classList.toggle('caps');
                 }
@@ -856,7 +867,6 @@ class Keyboard {
                 } else if(key.getAttribute('data') === 'CapsLock') {
                     upper = 1;
                 }
-                value += key.innerText;
 
                 if(key.getAttribute('data') === 'ShiftLeft') {
                     shiftRight.classList.remove('active');
@@ -902,10 +912,6 @@ class Keyboard {
                         upper = 0;
                     }
                 }
-
-                // if(key.getAttribute('data') === 'Backspace' && upper === 1) {
-
-                // }
             });
 
             key.addEventListener('mouseleave', () => {
@@ -918,6 +924,25 @@ class Keyboard {
             capsLock.style.backgroundColor = '#adadad';
             capsLock.style.color = '#000000;';
         }
+    }
 
+    select(key) {
+            let newStr;
+            if(this.textArea.selectionStart === this.textArea.selectionEnd) {
+                if(key.getAttribute('data') === 'Backspace') {
+                    newStr = this.textArea.setRangeText('', this.textArea.selectionStart - 1, this.textArea.selectionStart);
+                    this.textArea.focus();
+                    this.textArea.selectionStart = this.textArea.selectionEnd;
+                } else if(key.getAttribute('data') === 'Delete') {
+                    newStr = this.textArea.setRangeText('', this.textArea.selectionStart, this.textArea.selectionStart + 1);
+                    this.textArea.focus();
+                    this.textArea.selectionStart = this.textArea.selectionEnd;
+                }
+            } else if (this.textArea.selectionStart !== this.textArea.selectionEnd){
+                newStr = this.textArea.setRangeText('', this.textArea.selectionStart - 1, this.textArea.selectionEnd);
+                this.textArea.focus();
+            }
+
+            return newStr;
     }
 }

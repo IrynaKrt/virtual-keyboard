@@ -1,4 +1,4 @@
-alert('Здравствуй уважаемый проверяющий! Работа еще не закончена (по тз пункты выполнены, но есть баги, которые нужно исправить)! \n Вернитесь пожалуйста к моей работе в последний день проверки или будьте более лояльны относительно багов, если остальное соответсвует ТЗ \n Заранее безумно благодарю за проверку и подсказки улучшений!')
+// alert('Здравствуй уважаемый проверяющий! Работа еще не закончена (по тз пункты выполнены, но есть баги, которые нужно исправить)! \n Вернитесь пожалуйста к моей работе в последний день проверки или будьте более лояльны относительно багов, если остальное соответсвует ТЗ \n Заранее безумно благодарю за проверку и подсказки улучшений!')
 window.addEventListener('DOMContentLoaded', () => {
     const keyboard = new Keyboard();
     keyboard.init();
@@ -542,9 +542,11 @@ window.addEventListener('DOMContentLoaded', () => {
       this.toggleCircle.className = 'toggle-circle';
       this.changeLanguage.appendChild(this.toggleCircle);
 
-      this.language = document.createElement('div');
+      this.language = document.createElement('input');
+      this.language.setAttribute('readolnly', 'readolnly');
       this.language.className = 'language';
       this.language.innerText = 'english';
+      this.language.value = 'english';
       this.changeLanguage.appendChild(this.language);
 
       this.keyboard = document.createElement('div');
@@ -578,7 +580,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
       this.attention = document.createElement('div');
       this.attention.className = 'attention';
-      this.attention.innerText = 'Задание выполнено на базе Windows \n Для переключения между языками можно использовать меню или сочетание Shift + Alt';
+      this.attention.innerText = 'Задание выполнено на базе Windows \n Для переключения между языками можно использовать меню или сочетание Alt + Shift';
       this.main.appendChild(this.attention);
 
       //Keys
@@ -619,7 +621,12 @@ window.addEventListener('DOMContentLoaded', () => {
         keyElement.enUpt = key.enUpt;
         keyElement.className = 'keys';
 
-        keyElement.innerText = key.enKey;
+        if(this.language.value === 'english') {
+          keyElement.innerText = key.enKey;
+        } else {
+          keyElement.innerText = key.ruKey;
+
+        }
 
         if (key.code === "Tab") {
           keyElement.className = "keys tab-key";
@@ -995,9 +1002,11 @@ window.addEventListener('DOMContentLoaded', () => {
           if (keys[i].classList.contains('ru-active')) {
             keys[i].innerText = this.keysObjects[i].ruKey;
             this.language.innerText = 'русский';
+            this.language.value = 'русский';
           } else {
             keys[i].innerText = this.keysObjects[i].enKey;
             this.language.innerText = 'english';
+            this.language.value = 'english';
           }
         }
       })
@@ -1058,6 +1067,16 @@ window.addEventListener('DOMContentLoaded', () => {
     //LockalStorage
     window.addEventListener('beforeunload', () => setLocalStorage('text', textInput));
     window.addEventListener('load', () => getLocalStorage('text', textInput));
+    window.addEventListener('beforeunload', () => setLocalStorage('language', language));
+    window.addEventListener('load', () => {
+      getLocalStorage('language', language);
+      if(language.value === 'english') {
+        return 1;
+      } else if(language.value === 'русский') {
+        changeLanguage.click();
+      }
+    });
+    console.log(language.value)
 
     function setLocalStorage(value, arg) {
         localStorage.setItem(value, arg.value);

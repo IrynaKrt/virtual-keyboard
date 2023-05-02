@@ -1,4 +1,3 @@
-// alert('Здравствуй уважаемый проверяющий! Работа еще не закончена (по тз пункты выполнены, но есть баги, которые нужно исправить)! \n Вернитесь пожалуйста к моей работе в последний день проверки или будьте более лояльны относительно багов, если остальное соответсвует ТЗ \n Заранее безумно благодарю за проверку и подсказки улучшений!')
 window.addEventListener('DOMContentLoaded', () => {
   const keyboard = new Keyboard();
   keyboard.init();
@@ -798,18 +797,33 @@ class Keyboard {
         elem.classList.add('active');
       }
       if (this.keysForTextarea.includes(e.code) && e.code == elem.getAttribute('data')) {
-        if (elem.textContent === 'Tab') {
-          // Надо вставлять по курсору, так вставляется в конец (лучше написать функцию, которая будет это делать)
-          this.textArea.value += '  ';
-          return 0;
+        let content = elem.textContent;
+        if (e.code === 'Space') {
+          content = ' ';
         }
-        if (elem.textContent === 'Enter') {
-          // Надо вставлять по курсору, так вставляется в конец
-          this.textArea.value += '\n';
-          return 0;
+        if (e.code === 'Tab') {
+          content = '   ';
         }
-        // Надо вставлять по курсору, так вставляется в конец
-        this.textArea.value += elem.textContent;
+        if (e.code === 'Enter') {
+          content = '\n';
+        }
+
+        const start = this.textArea.selectionStart;
+        const end = this.textArea.selectionEnd;
+        if (!this.textArea.value) {
+          this.textArea.value += content;
+        } else {
+          const strValue = this.textArea.value.split('');
+          strValue.splice(start, end - start, content);
+          this.textArea.value = strValue.join('');
+          if (e.code === 'Tab') {
+            this.textArea.selectionStart = start + 3;
+            this.textArea.selectionEnd = start + 3;
+          } else {
+            this.textArea.selectionStart = start + 1;
+            this.textArea.selectionEnd = start + 1;
+          }
+        }
         return 0;
       }
       if (e.code === 'Backspace' || e.code === 'Delete') {
@@ -892,15 +906,15 @@ class Keyboard {
           this.isCapsActive = !this.isCapsActive;
           if (this.isCapsActive) {
               if (this.isShiftActive === false) {
-                  capsBigLetters(this.language.innerText)
+                  capsBigLetters()
               } else if (this.isShiftActive === true) {
-                  capsSmallLetters(this.language.innerText)
+                  capsSmallLetters()
               }
           } else if (this.isCapsActive === false) {
               if (this.isShiftActive === false) {
-                  capsSmallLetters(this.language.innerText)
+                  capsSmallLetters()
               } else if (this.isShiftActive === true) {
-                  capsBigLetters(this.language.innerText)
+                  capsBigLetters()
               }
           }
 
@@ -927,7 +941,7 @@ class Keyboard {
               if (!element.ruUp) {
                 return 1;
               } else {
-                if (this.language.innerText === 'русский') {
+                if (element.classList.contains('ru-active')) {
                   element.innerText = element.ruUp;
                   element.classList.add('shift-active');
                 } else {
@@ -938,7 +952,7 @@ class Keyboard {
             });
           } else {
             keys.forEach(element => {
-              if (this.language.innerText === 'русский') {
+              if (element.classList.contains('ru-active')) {
                 element.innerText = element.ruKey;
                 element.classList.remove('shift-active');
               } else {
@@ -1085,6 +1099,10 @@ class Keyboard {
           newChar += '';
         } else if (key.getAttribute('keyname') === 'Shift') {
           newChar += '';
+        } else if (key.getAttribute('keyname') === 'Tab') {
+          newChar += '   ';
+        } else if (key.getAttribute('keyname') === 'Space') {
+          newChar += ' ';
         } else if (key.getAttribute('keyname') === 'Alt') {
           this.textArea.blur();
         } else if (key.getAttribute('data') === 'Backspace') {
@@ -1098,9 +1116,22 @@ class Keyboard {
         } else {
           newChar += key.innerHTML;
         }
-
-        this.textArea.selectionStart = this.textArea.selectionEnd;
-        this.textArea.value += newChar;
+        const start = this.textArea.selectionStart;
+        const end = this.textArea.selectionEnd;
+        if (!this.textArea.value) {
+          this.textArea.value += newChar;
+        } else {
+          const strValue = this.textArea.value.split('');
+          strValue.splice(start, end - start, newChar);
+          this.textArea.value = strValue.join('');
+          if (key.getAttribute('data') === 'Tab') {
+            this.textArea.selectionStart = start + 3;
+            this.textArea.selectionEnd = start + 3;
+          } else {
+            this.textArea.selectionStart = start + 1;
+            this.textArea.selectionEnd = start + 1;
+          }
+        }
 
         //Classes
         key.classList.remove('remove');

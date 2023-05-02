@@ -749,6 +749,37 @@ class Keyboard {
       keys[i].setAttribute('lowerCaseName', keys[i].innerText.toLowerCase());
     };
 
+    function showBigLetters() {
+      keys.forEach(element => {
+          if (!element.ruUp) {
+              return 1;
+          } else {
+            if (element.classList.contains('ru-active')) {
+                  element.innerText = element.ruUp;
+                  element.classList.add('shift-active');
+              } else {
+                  element.innerText = element.enUpt;
+                  element.classList.add('shift-active');
+              }
+          }
+      });
+  }
+  function showSmallLetters() {
+      keys.forEach(element => {
+          if (!element.ruUp) {
+              return 1;
+          } else {
+              if (element.classList.contains('ru-active')) {
+                  element.innerText = element.ruKey;
+                  element.classList.remove('shift-active');
+              } else {
+                  element.innerText = element.enKey;
+                  element.classList.remove('shift-active');
+              }
+          }
+      });
+  }
+
     //KeyDown
 
     window.addEventListener('keydown', (e) => {
@@ -791,15 +822,15 @@ class Keyboard {
         this.isShiftActive = true;
         if (this.isShiftActive === true) {
           if (this.isCapsActive) {
-              showSmallLetters(this.language.innerText);
+              showSmallLetters();
           } else {
-              showBigLetters(this.language.innerText);
+              showBigLetters();
           }
           keys.forEach(element => {
             if (!element.ruUp) {
               return 1;
             } else {
-              if (this.language.innerText === 'русский') {
+              if (element.classList.contains('ru-active')) {
                 element.innerText = element.ruUp;
                 element.classList.add('shift-active');
               } else {
@@ -810,7 +841,7 @@ class Keyboard {
           });
         } else {
           keys.forEach(element => {
-            if (this.language.innerText === 'русский') {
+            if (element.classList.contains('ru-active')) {
               element.innerText = element.ruKey;
               element.classList.remove('shift-active');
             } else {
@@ -825,51 +856,51 @@ class Keyboard {
 
       if (e.code == 'CapsLock' && !e.repeat) {
           console.log('key')
-          function showBigLetters(language) {
-              keys.forEach(element => {
-                  if (!element.ruUp) {
-                      return 1;
-                  } else {
-                  if (language === 'русский') {
-                      element.innerText = element.ruUp;
-                      element.classList.add('caps-active');
-                  } else {
-                      element.innerText = element.enUpt;
-                      element.classList.add('caps-active');
-                  }
-                  }
-              });
-          }
-          function showSmallLetters(language) {
-              keys.forEach(element => {
-                  if (!element.ruUp) {
-                      return 1;
-                  } else {
-                      if (language === 'русский') {
-                          element.innerText = element.ruKey;
-                          element.classList.remove('caps-active');
-                      } else {
-                          element.innerText = element.enKey;
-                          element.classList.remove('caps-active');
-                      }
-                  }
-              });
-          }
+          function capsBigLetters() {
+            keys.forEach(element => {
+                if (!element.ruUp || element.getAttribute('isLetter') === 'noletter') {
+                    return 1;
+                } else {
+                  if (element.classList.contains('ru-active')) {
+                        element.innerText = element.ruUp;
+                        element.classList.add('caps-active');
+                    } else {
+                        element.innerText = element.getAttribute('isLetter') === 'ruletter' ? element.enKey : element.enUpt;
+                        element.classList.add('caps-active');
+                    }
+                }
+            });
+        }
+        function capsSmallLetters() {
+            keys.forEach(element => {
+                if (!element.ruUp || element.getAttribute('isLetter') === 'noletter') {
+                    return 1;
+                } else {
+                    if (element.classList.contains('ru-active')) {
+                        element.innerText = element.ruKey;
+                        element.classList.remove('caps-active');
+                    } else {
+                        element.innerText = element.enKey;
+                        element.classList.remove('caps-active');
+                    }
+                }
+            });
+        }
           capsLock.classList.toggle('active');
           capsLock.classList.toggle('caps');
           capsLock.classList.toggle('caps-active');
           this.isCapsActive = !this.isCapsActive;
           if (this.isCapsActive) {
               if (this.isShiftActive === false) {
-                  showBigLetters(this.language.innerText)
+                  capsBigLetters(this.language.innerText)
               } else if (this.isShiftActive === true) {
-                  showSmallLetters(this.language.innerText)
+                  capsSmallLetters(this.language.innerText)
               }
           } else if (this.isCapsActive === false) {
               if (this.isShiftActive === false) {
-                  showSmallLetters(this.language.innerText)
+                  capsSmallLetters(this.language.innerText)
               } else if (this.isShiftActive === true) {
-                  showBigLetters(this.language.innerText)
+                  capsBigLetters(this.language.innerText)
               }
           }
 
@@ -972,7 +1003,6 @@ class Keyboard {
       if (e.target.getAttribute('data') === 'CapsLock' && !e.repeat) {
           function capsBigLetters() {
               keys.forEach(element => {
-                console.log(element.getAttribute('isLetter'));
                   if (!element.ruUp || element.getAttribute('isLetter') === 'noletter') {
                       return 1;
                   } else {

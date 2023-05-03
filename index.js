@@ -613,7 +613,7 @@ class Keyboard {
 
     this.attention = document.createElement('div');
     this.attention.className = 'attention';
-    this.attention.innerText = 'Задание выполнено на базе Windows \n Для переключения между языками можно использовать меню или сочетание Alt + Shift';
+    this.attention.innerText = 'Задание выполнено на базе Windows \n Для переключения между языками можно использовать меню или сочетание Alt + Shift(одновременно)';
     this.main.appendChild(this.attention);
 
     //Keys

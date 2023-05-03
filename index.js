@@ -968,13 +968,19 @@ class Keyboard {
           for (let j = 0; j < keys.length; j++) {
             keys[j].classList.toggle('ru-active');
             keys[j].classList.toggle('keys-night');
-            if (keys[j].classList.contains('ru-active')) {
-              keys[j].innerText = this.keysObjects[j].ruKey;
+            toggleCircle.classList.toggle('active');
+            changeLanguage.classList.toggle('active');
+            textInput.classList.toggle('active');
+            if (keys[i].classList.contains('ru-active')) {
+              keys[i].innerText = this.keysObjects[i].ruKey;
               this.language.innerText = 'русский';
+              this.language.value = 'русский';
             } else {
-              keys[j].innerText = this.keysObjects[j].enKey;
+              keys[i].innerText = this.keysObjects[i].enKey;
               this.language.innerText = 'english';
+              this.language.value = 'english';
             }
+
           }
         }
       }

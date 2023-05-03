@@ -20,6 +20,20 @@ body {
     }
 }
 
+@keyframes active-click {
+    0%{
+        border: none;
+    }
+    50%{
+        border: 1px solid #333;
+        background-color: #d3d3d3;
+        color: #000;
+    }
+    100% {
+        border: none;
+    }
+}
+
 .container {
     display: flex;
     justify-content: center;
@@ -207,6 +221,10 @@ body {
 .keys.active {
     background-color: #333;
     color: #fff;
+}
+
+.keys.active-click {
+    animation: active-click 0.5s;
 }
 
 .keys.remove {

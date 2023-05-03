@@ -613,7 +613,7 @@ class Keyboard {
 
     this.attention = document.createElement('div');
     this.attention.className = 'attention';
-    this.attention.innerText = 'Задание выполнено на базе Windows \n Для переключения между языками можно использовать меню или сочетание Alt + Shift(одновременно)';
+    this.attention.innerText = 'Задание выполнено на базе Windows \n Для переключения между языками можно использовать меню\nили\n сочетание Alt + Shift(без удержания!)';
     this.main.appendChild(this.attention);
 
     //Keys
@@ -794,7 +794,7 @@ class Keyboard {
       }
       elem.classList.remove('remove');
       if (e.code == elem.getAttribute('data')) {
-        elem.classList.add('active');
+        elem.classList.add('active-click');
       }
       if (this.keysForTextarea.includes(e.code) && e.code == elem.getAttribute('data')) {
         let content = elem.textContent;
@@ -831,8 +831,8 @@ class Keyboard {
       }
 
       if ((e.code == 'ShiftLeft' || e.code == 'ShiftRight') && !e.repeat) {
-        shiftLeft.classList.add('active');
-        shiftRight.classList.add('active');
+        shiftLeft.classList.add('active-click');
+        shiftRight.classList.add('active-click');
         this.isShiftActive = true;
         if (this.isShiftActive === true) {
           if (this.isCapsActive) {
@@ -869,7 +869,6 @@ class Keyboard {
       }
 
       if (e.code == 'CapsLock' && !e.repeat) {
-          console.log('key')
           function capsBigLetters() {
             keys.forEach(element => {
                 if (!element.ruUp || element.getAttribute('isLetter') === 'noletter') {
@@ -900,7 +899,7 @@ class Keyboard {
                 }
             });
         }
-          capsLock.classList.toggle('active');
+          capsLock.classList.toggle('active-click');
           capsLock.classList.toggle('caps');
           capsLock.classList.toggle('caps-active');
           this.isCapsActive = !this.isCapsActive;
@@ -927,8 +926,8 @@ class Keyboard {
       e.preventDefault()
       for (let i = 0; i < keys.length; i++) {
         if (e.code == keys[i].getAttribute('data')) {
-          keys[i].classList.remove('active')
-          keys[i].classList.add('remove')
+          keys[i].classList.remove('active-click')
+          // keys[i].classList.add('remove')
         }
 
         if ((e.code == 'ShiftLeft' || e.code == 'ShiftRight') && !e.repeat) {

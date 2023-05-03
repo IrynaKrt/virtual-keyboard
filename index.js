@@ -1093,7 +1093,7 @@ class Keyboard {
 
     keys.forEach(key => {
       key.addEventListener('click', (e) => {
-        let newChar = ''
+        let newChar = '';
         //Input
         if (key.classList.contains('caps-lock-key')) {
           newChar += '';
@@ -1105,6 +1105,8 @@ class Keyboard {
           newChar += ' ';
         } else if (key.getAttribute('keyname') === 'Alt') {
           this.textArea.blur();
+        }  else if (key.getAttribute('keyname') === 'Ctrl') {
+          newChar += '';
         } else if (key.getAttribute('data') === 'Backspace') {
           this.select(key);
         } else if (key.getAttribute('data') === 'Delete') {
@@ -1127,6 +1129,9 @@ class Keyboard {
           if (key.getAttribute('data') === 'Tab') {
             this.textArea.selectionStart = start + 3;
             this.textArea.selectionEnd = start + 3;
+          } else if (key.getAttribute('data') === 'Delete' || key.getAttribute('data') === 'Backspace') {
+            this.textArea.selectionStart = start === 0 ? 0 : start;
+            this.textArea.selectionEnd = start === 0 ? 0 : start;
           } else {
             this.textArea.selectionStart = start + 1;
             this.textArea.selectionEnd = start + 1;

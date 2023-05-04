@@ -20,20 +20,6 @@ body {
     }
 }
 
-@keyframes active-click {
-    0%{
-        border: none;
-    }
-    50%{
-        border: 1px solid #333;
-        background-color: #d3d3d3;
-        color: #000;
-    }
-    100% {
-        border: none;
-    }
-}
-
 .container {
     display: flex;
     justify-content: center;
@@ -111,10 +97,10 @@ body {
     color: #fff;
 }
 
-.keys-night:hover {
+/* .keys-night:hover {
     background-color: #adadad;
     color: #000000;
-}
+} */
 
 .keys.keys-night.active,
 .caps-lock-key.keys-night.caps-active {
@@ -213,22 +199,28 @@ body {
     transition: .2s;
 }
 
-.keys:hover {
+/* .keys:hover {
     background-color: #555;
     color: #fff;
-}
+} */
 
 .keys.active {
-    background-color: #333;
-    color: #fff;
+    background-color: #fff;
+    color: #333;
+    transition: all .05s;
 }
 
 .keys.active-click {
-    animation: active-click 0.5s;
+    border: 1px solid #333;
+    background-color: #d3d3d3;
+    color: #000;
+    transition: all .05s;
 }
 
 .keys.remove {
-    animation: keys-animation 0.5s forwards ;
+    background-color: #333;
+    color: #fff;
+    transition: all .05s;
 }
 
 .caps {

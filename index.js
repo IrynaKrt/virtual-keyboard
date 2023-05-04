@@ -986,7 +986,7 @@ class Keyboard {
     });
 
     // Click
-    window.addEventListener('click', (e) => {
+    window.addEventListener('mousedown', (e) => {
       // Shift check
       if (e.target.getAttribute('data') === 'ShiftLeft' || e.target.getAttribute('data') === 'ShiftRight') {
         this.isShiftActive = !this.isShiftActive;
@@ -1071,6 +1071,7 @@ class Keyboard {
       }
   })
 
+
     //Language
 
     changeLanguage.addEventListener('click', () => {
@@ -1097,7 +1098,9 @@ class Keyboard {
     //KeysInput
 
     keys.forEach(key => {
-      key.addEventListener('click', (e) => {
+      key.addEventListener('mousedown', (e) => {
+        key.classList.remove('remove');
+        key.classList.add('active');
         let newChar = '';
         //Input
         if (key.classList.contains('caps-lock-key')) {
@@ -1143,11 +1146,6 @@ class Keyboard {
           }
         }
 
-        //Classes
-        key.classList.remove('remove');
-        key.classList.add('active');
-
-
         if (key.classList.contains('caps-lock-key')) {
           key.classList.toggle('caps');
         }
@@ -1158,7 +1156,7 @@ class Keyboard {
         }
       });
 
-      key.addEventListener('mouseleave', () => {
+      key.addEventListener('mouseup', () => {
         key.classList.remove('active');
         key.classList.add('remove');
       });

@@ -1,3 +1,4 @@
 # virtual-keyboard
 
-## deploy: https://IrynaKrt.github.io/virtual-keyboard/index.html
+
+## deploy: [link](https://IrynaKrt.github.io/virtual-keyboard)
